@@ -2199,6 +2199,25 @@ body.locked {
 // إعدادات دعوة الفرح — عدّل البيانات هنا في مكان واحد بس
 // ============================================================
 
+function loadSong() {
+  try {
+    var b64 = "";
+    for (var i = 0; i < 6; i++) {
+      var x = new XMLHttpRequest();
+      x.open("GET", "a" + i + ".txt", false);
+      x.send();
+      if (x.status !== 200) throw new Error("chunk " + i);
+      b64 += x.responseText.replace(/\s+/g, "");
+    }
+    var bin = atob(b64);
+    var u = new Uint8Array(bin.length);
+    for (var k = 0; k < bin.length; k++) u[k] = bin.charCodeAt(k);
+    return URL.createObjectURL(new Blob([u], { type: "audio/mpeg" }));
+  } catch (e) {
+    return "";
+  }
+}
+
 const WEDDING_CONFIG = {
   couple: {
     groom: "يحي",
@@ -2241,11 +2260,11 @@ const WEDDING_CONFIG = {
   // الأغنية: Pachelbel Canon in D (guitar) CC BY-SA 4.0, Free Music Archive via Wikimedia Commons
   audio: {
     // مسار ملف الأغنية
-    src: "https://upload.wikimedia.org/wikipedia/commons/a/ae/Pachelbel_-_Canon_in_D_major,_P._37_(Guitar).ogg",
+    src: loadSong(),
     // الثانية اللي تبدأ منها الأغنية أول ما الدعوة تتفتح
     startSeconds: 0,
     // مستوى الصوت النهائي (من 0 إلى 1)
-    volume: 0.6,
+    volume: 0.78,
     // مدة الظهور التدريجي للصوت بالمللي ثانية
     fadeInMs: 1800,
     // إعادة تلقائية لما تخلص
@@ -2794,4 +2813,4 @@ const WEDDING_CONFIG = {
 
 </script>
   </body>
-  </html>
+</html>
